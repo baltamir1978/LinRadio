@@ -1,0 +1,15 @@
+# No se instala con pip: el paquete irá en un .deb. Este fichero sólo configura las
+# herramientas de desarrollo.
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+markers = [
+    "red: prueba contra los servicios de verdad (LRCLIB, iTunes, Radio Browser, emisoras)",
+]
+
+[tool.mypy]
+python_version = "3.13"     # el de Debian 13
+packages = ["linradio"]
+strict = true
+warn_unused_ignores = true

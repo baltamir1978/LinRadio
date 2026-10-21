@@ -6,8 +6,46 @@ carpeta de proyectos; aquí va lo propio de esta.
 
 ## Estado (21-oct-2026)
 
-**Sin empezar.** Conviene hacerla a la vez que RadioDroid (Android), porque comparten el diseño
-del motor, aunque no el código.
+**Hechos y probados en el Mac, con los servicios de verdad, los servicios sin reproductor**
+(37 pruebas, mypy estricto):
+- `lyrics.py`: LRCLIB con todas las búsquedas de repuesto de MacRadio (al revés, por el artista
+  principal, por el título filtrando por artista). Probado con «El Canto del Loco y Amaia
+  Montero - Puede ser», el caso que falló en MacRadio.
+- `titles.py`: partir el título ICY (sin romper «M-Clan»), eslóganes y códigos fuera, arreglo de
+  Latin-1, emisoras que mandan título y artista al revés (Cassette FM), el reloj de la letra
+  (ajuste a mano, clic en una línea, retraso del título aprendido, cuándo sospechar que el
+  título se ha quedado).
+- `catalog.py`: emisoras (mismo JSON que MacRadio), Radio Browser y carátulas de iTunes.
+- `history.py`: historial con favoritas e ignorados, como MacRadio.
+- `intro.py`: medir la cuña de entrada y quitarla conservando los títulos ICY. Medida en
+  directo: **La Indie, 320.991 bytes** (unos 20 s); Cadena 100, sin cuña.
+- `memory.py`: lo aprendido de cada emisora.
+- `Tools/exportar-macradio.py`: saca las emisoras de MacRadio (probado: las 7 de Bruno).
+
+**Falta, y necesita Debian:** la reproducción con GStreamer, Shazam con songrec, MPRIS, la
+bandeja y la ventana. `IcyReframer` irá dentro del elemento que lea el stream.
+
+## Cómo se prueba
+
+```sh
+.venv/bin/pytest && .venv/bin/mypy
+XDG_DATA_HOME=… XDG_STATE_HOME=… .venv/bin/python -m linradio --letra "M-Clan - Carolina"
+```
+
+## Decisiones tomadas aquí (21-oct-2026)
+
+- **Peticiones con 20 s de espera y dos reintentos si el servidor dice «ocupado»** (503/429, a
+  los 2 y a los 4 s). LRCLIB se sobrecarga a ratos y al azar (la misma búsqueda da 503 y al
+  momento 200) y alguna búsqueda tarda 14 s, más que los 12 de MacRadio. A MacRadio le pasa lo
+  mismo y no lo trata: si Bruno ve letras que no salen a la primera, es esto.
+- **La primera importación de emisoras sustituye a la lista de partida**: si no, volverían las
+  que se quitaron en el Mac (SER Oriente). Las siguientes sólo añaden.
+- **`Station` usa las claves de MacRadio** (`streamURL`, `logoURL`…), aunque no sea el estilo de
+  Python, para leer su JSON tal cual.
+- Un fallo de TLS con el servidor de Cadena 100 resultó ser **puntual del servidor**: al minuto
+  entraba con el TLS por omisión. No hace falta rebajar la seguridad.
+- **Riesgo conocido**: `urllib` no entiende la línea de estado `ICY 200 OK` de los servidores
+  SHOUTcast viejos. Ninguna de las emisoras de Bruno la usa; con GStreamer no importa.
 
 ## La especificación es el original
 
