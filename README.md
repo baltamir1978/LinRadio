@@ -6,10 +6,25 @@ sincronizada**, historial con favoritas y reconocimiento de canciones.
 Versión para Linux de [MacRadio](https://github.com/baltamir1978/MacRadio), la app de macOS. No
 es un port: se escribe desde cero en Python, con la app original como especificación.
 
-**Estado (21-oct-2026): los servicios funcionan; falta el reproductor.** Letras (LRCLIB),
-carátulas (iTunes), búsqueda de emisoras (Radio Browser), historial y el salto de la cuña de
-entrada están hechos y probados. La reproducción con GStreamer, Shazam, los controles del
-sistema y la ventana llegarán cuando haya un Debian donde probarlos.
+**Estado (6-nov-2026): ventana GTK 4 + libadwaita y reproductor GStreamer.** Emisoras propias y
+búsqueda en Radio Browser, carátula, letra sincronizada con ajuste por emisora, historial con
+favoritas, salto de la cuña de entrada, Shazam (con songrec), controles en GNOME (MPRIS) y
+órdenes desde la terminal para la radio abierta.
+
+## Instalar en Debian
+
+```sh
+Tools/build-songrec.sh      # opcional: Shazam (necesita cargo; ver el propio script)
+Tools/build-deb.sh          # genera build/linradio_<versión>_<arq>.deb
+sudo apt install ./build/linradio_*.deb
+```
+
+## Órdenes para la radio abierta
+
+```sh
+linradio --play "Cadena 100"    # o sin nombre: la última
+linradio --toggle | --stop | --next | --previous | --identify | --favorite
+```
 
 ## Probarlo ya, por consola
 

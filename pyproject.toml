@@ -13,3 +13,18 @@ python_version = "3.13"     # el de Debian 13
 packages = ["linradio"]
 strict = true
 warn_unused_ignores = true
+
+# PyGObject no trae tipos: GTK, GStreamer y D-Bus son `Any` para mypy.
+[[tool.mypy.overrides]]
+module = ["gi", "gi.*"]
+ignore_missing_imports = true
+
+# La interfaz y lo que habla con GStreamer o D-Bus heredan de clases de GI o reciben sus
+# objetos; el resto de LinRadio sigue en modo estricto.
+[[tool.mypy.overrides]]
+module = ["linradio.ui", "linradio.ui.*", "linradio.player", "linradio.mpris"]
+disallow_subclassing_any = false
+disallow_any_unimported = false
+warn_return_any = false
+disallow_untyped_calls = false
+warn_unused_ignores = false

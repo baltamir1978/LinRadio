@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.baltamir1978.LinRadio</id>
+  <name>LinRadio</name>
+  <summary>Radio por internet con letra sincronizada</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>LicenseRef-proprietary</project_license>
+  <developer id="io.github.baltamir1978"><name>Bruno Altamirano</name></developer>
+  <description>
+    <p>Tus emisoras con carátula, letra sincronizada de LRCLIB, historial con favoritas,
+    búsqueda en Radio Browser, salto de la cuña de entrada y reconocimiento de canciones.</p>
+  </description>
+  <launchable type="desktop-id">io.github.baltamir1978.LinRadio.desktop</launchable>
+  <url type="homepage">https://github.com/baltamir1978/LinRadio</url>
+  <content_rating type="oars-1.1"/>
+</component>

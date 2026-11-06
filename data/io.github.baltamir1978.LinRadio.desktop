@@ -1,0 +1,21 @@
+[Desktop Entry]
+Type=Application
+Name=LinRadio
+GenericName=Radio por internet
+Comment=Radio por internet con carátula, letra sincronizada e historial
+Exec=linradio
+Icon=io.github.baltamir1978.LinRadio
+Terminal=false
+Categories=AudioVideo;Audio;Player;GTK;
+Keywords=radio;emisora;letra;lyrics;shazam;streaming;
+StartupNotify=true
+SingleMainWindow=true
+Actions=toggle;next;
+
+[Desktop Action toggle]
+Name=Escuchar / parar
+Exec=linradio --toggle
+
+[Desktop Action next]
+Name=Emisora siguiente
+Exec=linradio --next

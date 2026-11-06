@@ -29,7 +29,8 @@ Uso:
   linradio --historial
   linradio --version
 
-Sin argumentos se abrirá la ventana (todavía no existe).
+Sin argumentos se abre la ventana. Órdenes para la radio abierta (o que la abren):
+  linradio --play [emisora]   --toggle   --stop   --next   --previous   --identify   --favorite
 """
 
 

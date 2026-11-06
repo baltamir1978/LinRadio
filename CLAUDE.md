@@ -4,28 +4,46 @@ Versión para Linux de **MacRadio** (macOS), escrita **desde cero en Python**, n
 a las apps de Linux (pila, `.deb`, dónde se prueba, la bandeja) está en el `CLAUDE.md` de la
 carpeta de proyectos; aquí va lo propio de esta.
 
-## Estado (21-oct-2026)
+## Estado (6-nov-2026)
 
-**Hechos y probados en el Mac, con los servicios de verdad, los servicios sin reproductor**
-(37 pruebas, mypy estricto):
-- `lyrics.py`: LRCLIB con todas las búsquedas de repuesto de MacRadio (al revés, por el artista
-  principal, por el título filtrando por artista). Probado con «El Canto del Loco y Amaia
-  Montero - Puede ser», el caso que falló en MacRadio.
-- `titles.py`: partir el título ICY (sin romper «M-Clan»), eslóganes y códigos fuera, arreglo de
-  Latin-1, emisoras que mandan título y artista al revés (Cassette FM), el reloj de la letra
-  (ajuste a mano, clic en una línea, retraso del título aprendido, cuándo sospechar que el
-  título se ha quedado).
-- `catalog.py`: emisoras (mismo JSON que MacRadio), Radio Browser y carátulas de iTunes.
-- `history.py`: historial con favoritas e ignorados, como MacRadio.
-- `intro.py`: medir la cuña de entrada y quitarla conservando los títulos ICY. Medida en
-  directo: **La Indie, 320.991 bytes** (unos 20 s); Cadena 100, sin cuña.
-- `memory.py`: lo aprendido de cada emisora.
-- `Tools/exportar-macradio.py`: saca las emisoras de MacRadio (probado: las 7 de Bruno).
+**Ya en Debian 13 (Acer de Bruno), con reproductor y ventana** (0.2.0, 51 pruebas):
+- `player.py`: `playbin3` con reconexión (1, 2, 4, 8, 15, 30 s). Los títulos ICY se leen como
+  eventos TAG en el `audio-filter`, después del búfer, así que llegan cuando su audio va a
+  sonar (`SINK_LATENCY` = 0,2 s). En el mismo filtro, un `tee` deja el audio a 16 kHz mono
+  en `recognizer.PcmRing` para Shazam, sin segunda conexión y ya sin la ráfaga inicial.
+  Probado con Cadena 100 y La Indie (títulos y anillo lleno al ritmo real).
+- `proxy.py`: proxy local con `IcyReframer` sólo para las emisoras con cuña medida. Probado:
+  La Indie, cuña de 320.991 bytes medida en Debian y saltada conservando el `icy-metaint`.
+- `session.py`: lo que suena (sin GTK, con pruebas): historial, carátula con corrección de
+  «Título - Artista», letra, reloj, y las cinco razones para preguntar a Shazam (emisora
+  muda, sintonizar a mitad, medir `title_lag`, título quedado, botón).
+- `recognizer.py`: songrec con un WAV de 12 s. **songrec no está en Debian 13**: se compila
+  con `Tools/build-songrec.sh` (cargo) y va dentro del `.deb`, que pasa a ser `amd64`.
+- `mpris.py`: `org.mpris.MediaPlayer2.linradio`. Probado con `gdbus`: estado, metadatos con
+  carátula, PlayPause, Quit.
+- Ventana (`linradio/ui/`): emisoras a la izquierda (logo, subir/bajar, renombrar, quitar;
+  buscar en Radio Browser, añadir a mano, importar el JSON de MacRadio), «Ahora» (carátula,
+  controles, favorita, Shazam, volumen, letra con − / + / ↺ y clic en la línea) e
+  «Historial» (búsqueda, sólo favoritas, borrar, borrar para siempre, títulos ignorados,
+  vaciar dejando las favoritas). Atajos: espacio, Ctrl+P, Ctrl+←/→, Ctrl+I, Ctrl+D,
+  Ctrl+Alt+←/→.
+- Una sola instancia: `linradio --play <emisora>`, `--toggle`, `--stop`, `--next`,
+  `--previous`, `--identify`, `--favorite` llegan a la abierta (probado).
+- Al cerrar la ventana sigue sonando (opción del menú); los controles quedan en GNOME.
+- Al despertar del reposo (`PrepareForSleep` de logind) se reconecta.
 
-**Falta, y necesita Debian:** la reproducción con GStreamer, Shazam con songrec, MPRIS, la
-bandeja y la ventana. `IcyReframer` irá dentro del elemento que lea el stream.
+**No hecho, a propósito:**
+- **Bandeja (StatusNotifierItem)**: GNOME no la muestra sin la extensión AppIndicator, que
+  Bruno no tiene. MPRIS da los controles y la carátula en el menú del sistema.
+- **gettext / cinco idiomas**: la interfaz está sólo en español.
+
+**Sin probar todavía:** Shazam de verdad (falta compilar songrec) y el sonido por altavoces
+(los del Acer no funcionan; todo se probó con `LINRADIO_AUDIO_SINK=fakesink`).
 
 ## Cómo se prueba
+
+La ventana necesita PyGObject (apt), que no está en el `.venv`: se arranca con el Python del
+sistema, `python3 -m linradio`. **Sin sonar en los altavoces**: `LINRADIO_AUDIO_SINK=fakesink`.
 
 ```sh
 .venv/bin/pytest && .venv/bin/mypy
