@@ -14,7 +14,7 @@ favoritas, salto de la cuña de entrada, Shazam (con songrec), controles en GNOM
 ## Instalar en Debian
 
 ```sh
-Tools/build-songrec.sh      # opcional: Shazam (necesita cargo; ver el propio script)
+Tools/build-songrec.sh      # opcional: Shazam (Rust reciente de rustup; ver el propio script)
 Tools/build-deb.sh          # genera build/linradio_<versión>_<arq>.deb
 sudo apt install ./build/linradio_*.deb
 ```

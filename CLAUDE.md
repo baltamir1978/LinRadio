@@ -17,8 +17,12 @@ carpeta de proyectos; aquí va lo propio de esta.
 - `session.py`: lo que suena (sin GTK, con pruebas): historial, carátula con corrección de
   «Título - Artista», letra, reloj, y las cinco razones para preguntar a Shazam (emisora
   muda, sintonizar a mitad, medir `title_lag`, título quedado, botón).
-- `recognizer.py`: songrec con un WAV de 12 s. **songrec no está en Debian 13**: se compila
-  con `Tools/build-songrec.sh` (cargo) y va dentro del `.deb`, que pasa a ser `amd64`.
+- `recognizer.py`: songrec con un WAV de 12 s. **Probado con Cadena 100**: reconoce la misma
+  canción que anuncia la emisora, con su posición, en 0,4 s. **songrec no está en Debian 13**:
+  se compila con `Tools/build-songrec.sh` y va dentro del `.deb` (`/usr/lib/linradio/songrec`),
+  que pasa a ser `amd64`. songrec 0.8.1 pide **rustc ≥ 1.92** y Debian 13 trae la 1.85 (ni la
+  0.6.7 compila: sus dependencias piden 1.88): se usa Rust de rustup en `~/.cargo`, instalado
+  con `--no-modify-path`. Paquetes de desarrollo que pide: ver la cabecera del script.
 - `mpris.py`: `org.mpris.MediaPlayer2.linradio`. Probado con `gdbus`: estado, metadatos con
   carátula, PlayPause, Quit.
 - Ventana (`linradio/ui/`): emisoras a la izquierda (logo, subir/bajar, renombrar, quitar;
@@ -37,8 +41,8 @@ carpeta de proyectos; aquí va lo propio de esta.
   Bruno no tiene. MPRIS da los controles y la carátula en el menú del sistema.
 - **gettext / cinco idiomas**: la interfaz está sólo en español.
 
-**Sin probar todavía:** Shazam de verdad (falta compilar songrec) y el sonido por altavoces
-(los del Acer no funcionan; todo se probó con `LINRADIO_AUDIO_SINK=fakesink`).
+**Sin probar todavía:** el sonido por altavoces (los del Acer no funcionan; todo se probó con
+`LINRADIO_AUDIO_SINK=fakesink`).
 
 ## Cómo se prueba
 
