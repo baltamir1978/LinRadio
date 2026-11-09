@@ -218,8 +218,9 @@ class LinRadioApp(Adw.Application):
             track_id=(now.history_id or "ninguna").replace("-", "_"))
 
     def _intro_mismatch(self, url: str) -> None:
-        # La cuña ha cambiado: se olvida y se vuelve a medir.
-        self.memory.forget_intro(url)
+        # La conexión empezó con otros bytes y no se ha quitado nada. Lo recordado sigue sirviendo
+        # si la siguiente trae la cuña de siempre: no se borra, sólo se vuelve a medir.
+        self.memory.mark_intro_stale(url)
         self.memory.save()
         self._learn_intro(url)
 

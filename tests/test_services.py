@@ -413,6 +413,20 @@ def test_cada_cuanto_se_vuelve_a_medir_la_cuna() -> None:
     assert m.needs_learning_intro(url, now=1000 + 4 * 86400)   # sin cuña: cada 3 días
 
 
+def test_una_conexion_distinta_no_borra_la_cuna() -> None:
+    url = "https://radio.test/s.mp3"
+    m = StationMemory()
+    m.record_intro(url, StreamIntro(40_000, b"x", 1000.0))
+    m.mark_intro_stale(url)
+    m.save()
+    again = StationMemory.load()
+    intro = again.intro(url)
+    assert intro is not None and intro.length == 40_000 and intro.prefix == b"x"
+    assert again.needs_learning_intro(url, now=1000 + 1)       # se mide otra vez ya
+    m.mark_intro_stale("https://radio.test/otra.mp3")          # sin cuña recordada, nada
+    assert m.intro("https://radio.test/otra.mp3") is None
+
+
 def test_el_formato_de_las_emisoras_es_el_de_macradio() -> None:
     # Las claves que escribe MacRadio (Codable de su `Station`).
     stations = StationList([Station("Kiss FM", "https://k.test", genre="Dance")])

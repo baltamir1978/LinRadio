@@ -82,14 +82,17 @@ class StationMemory:
                                      "prefix": base64.b64encode(intro.prefix).decode(),
                                      "checked_at": intro.checked_at}
 
-    def forget_intro(self, url: str) -> None:
-        self.data.get(url, {}).pop("intro", None)
+    def mark_intro_stale(self, url: str) -> None:
+        """Sigue valiendo para recortar si la cuña es la de siempre, pero hay que volver a medirla."""
+        entry = self.data.get(url, {}).get("intro")
+        if isinstance(entry, dict):
+            entry["checked_at"] = 0.0
 
     def needs_learning_intro(self, url: str, now: float | None = None) -> bool:
         """Las cuñas son anuncios y rotan: empiezan con la misma sintonía, pero cambia lo que
         duran. Con cuña se mide cada hora; sin ella, cada tres días (las emisoras las añaden)."""
         known = self.intro(url)
-        if known is None:
+        if known is None or known.checked_at <= 0:
             return True
         age = (now if now is not None else time.time()) - known.checked_at
         return age > 3600 if known.length > 0 else age > 3 * 24 * 3600
